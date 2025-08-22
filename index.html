@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সময়ভিত্তিক হিপনোসিস ইফেক্ট</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c0c2d, #1a1a4a, #0c0c2d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+    }
+    
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    
+    .container {
+      text-align: center;
+      z-index: 10;
+      max-width: 90%;
+    }
+    
+    .spiral-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin: 0 auto 30px;
+    }
+    
+    .spiral {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 8px solid transparent;
+      animation: spin 15s linear infinite;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+    
+    .spiral:nth-child(1) {
+      border-top-color: #ff00cc;
+      border-bottom-color: #ff00cc;
+      animation-duration: 12s;
+    }
+    
+    .spiral:nth-child(2) {
+      top: 30px;
+      left: 30px;
+      right: 30px;
+      bottom: 30px;
+      border-left-color: #00ffcc;
+      border-right-color: #00ffcc;
+      animation-direction: reverse;
+      animation-duration: 18s;
+    }
+    
+    .spiral:nth-child(3) {
+      top: 60px;
+      left: 60px;
+      right: 60px;
+      bottom: 60px;
+      border-top-color: #cc00ff;
+      border-bottom-color: #cc00ff;
+      animation-duration: 25s;
+    }
+    
+    .spiral-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #ffffff, #00ccff);
+      border-radius: 50%;
+      box-shadow: 0 0 30px #00ccff;
+      animation: pulse 3s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      100% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .message {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px cyan, 0 0 30px blue;
+      animation: wave 6s infinite ease-in-out;
+      font-weight: 600;
+      background: linear-gradient(45deg, #00ccff, #ff00cc, #00ffcc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    @keyframes wave {
+      0% { transform: translateY(0px) scale(1); opacity: 0.8; }
+      25% { transform: translateY(-15px) scale(1.05); opacity: 1; }
+      50% { transform: translateY(0px) scale(1); opacity: 0.8; }
+      75% { transform: translateY(15px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0px) scale(1); opacity: 0.8; }
+    }
+    
+    .sub-message {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .countdown-container {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 25px auto;
+      max-width: 500px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .countdown-title {
+      font-size: 1.4em;
+      margin-bottom: 15px;
+      color: #00ffcc;
+    }
+    
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .countdown-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      background: linear-gradient(45deg, #00ccff, #cc00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+    
+    .countdown-label {
+      font-size: 0.9em;
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(45deg, #00ccff, #cc00ff);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .volume-control {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    #volume {
+      width: 150px;
+    }
+    
+    .closed {
+      text-align: center;
+      z-index: 10;
+      max-width: 90%;
+    }
+    
+    .closed-icon {
+      font-size: 5em;
+      color: #ff0066;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .closed h2 {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      color: #ff0066;
+      text-shadow: 0 0 10px rgba(255, 0, 102, 0.5);
+    }
+    
+    .closed p {
+      font-size: 1.3em;
+      margin-bottom: 25px;
+      max-width: 500px;
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9em;
+      opacity: 0.7;
+    }
+    
+    @media (max-width: 768px) {
+      .spiral-container {
+        width: 250px;
+        height: 250px;
+      }
+      
+      .message {
+        font-size: 1.8em;
+      }
+      
+      .sub-message {
+        font-size: 1em;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+      }
+      
+      .countdown-number {
+        font-size: 2em;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .countdown-label {
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background stars -->
+  <div class="stars"></div>
+  
+  <!-- Main content (shown only during 9-10 PM) -->
+  <div id="content" class="container" style="display:none;">
+    <div class="spiral-container">
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral-center"></div>
+    </div>
+    
+    <div class="message">তুমি এখন আমার কথায় মনোযোগ দিচ্ছো...</div>
+    <div class="sub-message">গভীরভাবে শ্বাস নাও, শিথিল হও এবং এই দৃশ্য উপভোগ করো</div>
+    
+    <!-- Countdown Timer -->
+    <div class="countdown-container">
+      <div class="countdown-title">পর্যায় শেষ হতে বাকি:</div>
+      <div class="countdown">
+        <div class="countdown-item">
+          <div class="countdown-number" id="minutes">০০</div>
+          <div class="countdown-label">মিনিট</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="seconds">০০</div>
+          <div class="countdown-label">সেকেন্ড</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button class="btn" id="playBtn"><i class="fas fa-play"></i> শুরু করুন</button>
+      <button class="btn" id="pauseBtn"><i class="fas fa-pause"></i> বিরতি</button>
+      <button class="btn" id="fullscreenBtn"><i class="fas fa-expand"></i> পূর্ণস্ক্রিন</button>
+    </div>
+    
+    <div class="volume-control">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+    </div>
+    
+    <audio id="bgmusic" loop>
+      <source src="https://cdn.pixabay.com/download/audio/2022/01/20/audio_5be6f2fba7.mp3?filename=ambient-piano-amp-strings-120699.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <!-- Closed message (shown outside 9-10 PM) -->
+  <div id="closed" class="closed" style="display:none;">
+    <div class="closed-icon"><i class="fas fa-clock"></i></div>
+    <h2>⏰ সময় শেষ!</h2>
+    <p>এই কনটেন্ট শুধুমাত্র রাত ৯টা থেকে ১০টার মধ্যে দেখা যাবে।</p>
+    <div class="countdown-container">
+      <div class="countdown-title">পরবর্তী সেশনের জন্য অপেক্ষা করুন:</div>
+      <div class="countdown">
+        <div class="countdown-item">
+          <div class="countdown-number" id="nextHours">০০</div>
+          <div class="countdown-label">ঘন্টা</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="nextMinutes">০০</div>
+          <div class="countdown-label">মিনিট</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © ২০২৩ হিপনোসিস ইফেক্ট | নিরাপদ এবং শিথিলকরণের জন্য ডিজাইনকৃত
+  </div>
+
+  <script>
+    // Create animated stars in the background
+    function createStars() {
+      const starsContainer = document.querySelector('.stars');
+      const starsCount = 150;
+      
+      for (let i = 0; i < starsCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        const size = Math.random() * 3;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        star.style.animationDuration = `${5 + Math.random() * 10}s`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Check if current time is between 9 PM and 10 PM
+    async function checkTime() {
+      try {
+        let response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Dhaka");
+        let data = await response.json();
+        let datetime = new Date(data.datetime);
+        let hour = datetime.getHours();
+        let minute = datetime.getMinutes();
+        let second = datetime.getSeconds();
+
+        if (hour === 21) { // 9 PM to 10 PM
+          document.getElementById("content").style.display = "block";
+          document.getElementById("closed").style.display = "none";
+          updateCountdown(minute, second); // Start countdown to 10 PM
+        } else {
+          document.getElementById("content").style.display = "none";
+          document.getElementById("closed").style.display = "block";
+          showNextAvailableTime(hour, minute, second);
+        }
+      } catch (e) {
+        // Fallback to client time if API fails
+        let now = new Date();
+        let hour = now.getHours();
+        let minute = now.getMinutes();
+        let second = now.getSeconds();
+        
+        if (hour === 21) {
+          document.getElementById("content").style.display = "block";
+          document.getElementById("closed").style.display = "none";
+          updateCountdown(minute, second);
+        } else {
+          document.getElementById("content").style.display = "none";
+          document.getElementById("closed").style.display = "block";
+          showNextAvailableTime(hour, minute, second);
+        }
+        
+        document.body.innerHTML += "<div style='position:absolute; bottom:10px; left:10px; background:red; padding:5px; border-radius:5px;'>⚠️ স্থানীয় সময় ব্যবহার করা হচ্ছে</div>";
+      }
+    }
+    
+    // Update countdown to 10 PM
+    function updateCountdown(minute, second) {
+      const minutesLeft = 59 - minute;
+      const secondsLeft = 59 - second;
+      
+      document.getElementById('minutes').textContent = formatTime(minutesLeft);
+      document.getElementById('seconds').textContent = formatTime(secondsLeft);
+      
+      // Update every second
+      setTimeout(() => {
+        let newSecond = (second + 1) % 60;
+        let newMinute = minute;
+        if (newSecond === 0) {
+          newMinute = minute + 1;
+        }
+        updateCountdown(newMinute, newSecond);
+      }, 1000);
+    }
+    
+    // Show when the content will be available next
+    function showNextAvailableTime(currentHour, currentMinute, currentSecond) {
+      const now = new Date();
+      const nextAvailable = new Date();
+      
+      if (currentHour < 21) {
+        // If it's before 9 PM, show countdown to 9 PM
+        nextAvailable.setHours(21, 0, 0, 0);
+      } else {
+        // If it's after 10 PM, show countdown to next day 9 PM
+        nextAvailable.setDate(nextAvailable.getDate() + 1);
+        nextAvailable.setHours(21, 0, 0, 0);
+      }
+      
+      const diff = nextAvailable - now;
+      const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
+      const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      document.getElementById('nextHours').textContent = formatTime(hoursLeft);
+      document.getElementById('nextMinutes').textContent = formatTime(minutesLeft);
+      
+      // Update every minute
+      setTimeout(() => {
+        let newSecond = (currentSecond + 1) % 60;
+        let newMinute = currentMinute;
+        let newHour = currentHour;
+        if (newSecond === 0) {
+          newMinute = currentMinute + 1;
+          if (newMinute === 60) {
+            newMinute = 0;
+            newHour = currentHour + 1;
+          }
+        }
+        showNextAvailableTime(newHour, newMinute, newSecond);
+      }, 1000);
+    }
+    
+    // Format time to two digits
+    function formatTime(time) {
+      return time < 10 ? `0${time}` : time;
+    }
+    
+    // Setup event listeners for controls
+    function setupControls() {
+      const audio = document.getElementById('bgmusic');
+      const playBtn = document.getElementById('playBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const volumeSlider = document.getElementById('volume');
+      
+      playBtn.addEventListener('click', () => {
+        audio.play();
+        playBtn.innerHTML = '<i class="fas fa-play"></i> শুরু হয়েছে';
+        setTimeout(() => {
+          playBtn.innerHTML = '<i class="fas fa-play"></i> শুরু করুন';
+        }, 2000);
+      });
+      
+      pauseBtn.addEventListener('click', () => {
+        audio.pause();
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> থেমেছে';
+        setTimeout(() => {
+          pauseBtn.innerHTML = '<i class="fas fa-pause"></i> বিরতি';
+        }, 2000);
+      });
+      
+      fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Fullscreen error: ${err.message}`);
+          });
+          fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> প্রস্থান';
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+            fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> পূর্ণস্ক্রিন';
+          }
+        }
+      });
+      
+      volumeSlider.addEventListener('input', () => {
+        audio.volume = volumeSlider.value;
+      });
+      
+      // Auto-play with low volume when allowed
+      audio.volume = 0.3;
+      volumeSlider.value = 0.3;
+      
+      // Try to auto-play (will work if user has interacted with page before)
+      audio.play().catch(e => {
+        console.log("Auto-play prevented: ", e);
+      });
+    }
+    
+    // Initialize everything when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      createStars();
+      checkTime();
+      setupControls();
+    });
+  </script>
+</body>
+</html>
